@@ -3,14 +3,16 @@
 namespace App\DataFixtures;
 
 use App\Entity\Users;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class UsersFixtures extends Fixture
+class UsersFixtures extends Fixture implements DependentFixtureInterface
 {
-    private UserPasswordHasherInterface $passwordHasher;
+    private $passwordHasher;
 
+    // Injection du service de hachage des mots de passe
     public function __construct(UserPasswordHasherInterface $passwordHasher)
     {
         $this->passwordHasher = $passwordHasher;
@@ -18,23 +20,31 @@ class UsersFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $users = [];
+        // Liste des noms des références définies dans ClientsFixtures
+        $clientReferences = ['client_free', 'client_sfr', 'client_orange'];
 
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 1; $i < 20; $i++) {
             $user = new Users();
-            $user->setUsername('user'.$i)
-            ->setLastname('lastname'.$i)
-            ->setFirstname('firstname'.$i)
-                ->setEmail('user'.$i.'@gmail.com')
-                ->setPassword($this->passwordHasher->hashPassword($user, 'bilemo2025'))
-                ->setDateCreate(new \Datetime)
-                ->setRoles(['ROLE_USER']);
+            $user->setUsername('username_' . $i)
+                ->setPassword($this->passwordHasher->hashPassword($user, 'bilemo2025')) // Hachage du mot de passe
+                ->setRoles(['ROLE_USER'])
+                ->setEmail('username_' . $i . '@gmail.fr')
+                ->setLastname('lastname_' . $i)
+                ->setFirstname('firstname_' . $i)
+                ->setDateCreate(new \DateTime())
+                ->setClient($this->getReference($clientReferences[rand(0, 2)])); // Utilisation correcte de getReference
+
             $manager->persist($user);
-            $users[] = $user;
+        }
 
-    }
         $manager->flush();
-
     }
 
+    // Assurez-vous que ClientsFixtures est chargé avant UsersFixtures
+    public function getDependencies(): array
+    {
+        return [
+            ClientsFixtures::class, // Assurez-vous que ClientsFixtures est chargé avant UsersFixtures
+        ];
+    }
 }
