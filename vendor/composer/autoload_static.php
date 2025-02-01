@@ -42,10 +42,12 @@ class ComposerStaticInit74ab73114a599f4a2997b6a284f9e273
             'Symfony\\Component\\Yaml\\' => 23,
             'Symfony\\Component\\VarExporter\\' => 30,
             'Symfony\\Component\\VarDumper\\' => 28,
+            'Symfony\\Component\\Validator\\' => 28,
             'Symfony\\Component\\TypeInfo\\' => 27,
             'Symfony\\Component\\Translation\\' => 30,
             'Symfony\\Component\\String\\' => 25,
             'Symfony\\Component\\Stopwatch\\' => 28,
+            'Symfony\\Component\\Serializer\\' => 29,
             'Symfony\\Component\\Security\\Http\\' => 32,
             'Symfony\\Component\\Security\\Csrf\\' => 32,
             'Symfony\\Component\\Security\\Core\\' => 32,
@@ -185,6 +187,10 @@ class ComposerStaticInit74ab73114a599f4a2997b6a284f9e273
         array (
             0 => __DIR__ . '/..' . '/symfony/var-dumper',
         ),
+        'Symfony\\Component\\Validator\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/validator',
+        ),
         'Symfony\\Component\\TypeInfo\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/type-info',
@@ -200,6 +206,10 @@ class ComposerStaticInit74ab73114a599f4a2997b6a284f9e273
         'Symfony\\Component\\Stopwatch\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/stopwatch',
+        ),
+        'Symfony\\Component\\Serializer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/serializer',
         ),
         'Symfony\\Component\\Security\\Http\\' => 
         array (
