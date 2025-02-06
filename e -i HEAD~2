@@ -1,0 +1,77 @@
+[33mcommit d16017e831774873e6b92494bd259ab1dfd3bfde[m[33m ([m[1;36mHEAD -> [m[1;32mauth[m[33m, [m[1;31morigin/auth[m[33m)[m
+Author: Jessica Garrido <jessica.garrido.di@gmail.com>
+Date:   Thu Feb 6 18:35:58 2025 +0100
+
+    jwt security files
+
+[33mcommit ed0e5d2f34e0ae6267cd54fd01586062694bca97[m
+Author: Jessica Garrido <jessica.garrido.di@gmail.com>
+Date:   Thu Feb 6 18:08:42 2025 +0100
+
+    generate key openssl for jtw
+
+[33mcommit 1d706b8ea07ef8370369f0dafbb797b0641e48e3[m
+Author: Jessica Garrido <jessica.garrido.di@gmail.com>
+Date:   Thu Feb 6 17:53:35 2025 +0100
+
+    add dependances,packages jwt
+
+[33mcommit 063937669b5e08619e1a7d4b4107d53dd531b32c[m[33m ([m[1;31morigin/users-request[m[33m, [m[1;31morigin/main[m[33m, [m[1;32musers-request[m[33m, [m[1;32mmain[m[33m)[m
+Author: Jessica Garrido <jessica.garrido.di@gmail.com>
+Date:   Thu Feb 6 17:37:33 2025 +0100
+
+    request finished
+
+[33mcommit 8745a2362223665db22967c25bb1cf84ecd5af04[m
+Author: Jessica Garrido <jessica.garrido.di@gmail.com>
+Date:   Sat Feb 1 23:07:15 2025 +0100
+
+    users request finish
+
+[33mcommit 969289cb7f546caf982d28f75fbbc3adfb8accb3[m[33m ([m[1;31morigin/products-request[m[33m, [m[1;32mproducts-request[m[33m)[m
+Author: Jessica Garrido <jessica.garrido.di@gmail.com>
+Date:   Sat Feb 1 22:10:32 2025 +0100
+
+    products request finish
+
+[33mcommit 3f0c098f4d8a6f81642ec42a32df58b11c9d531a[m[33m ([m[1;32mfixtures[m[33m, [m[1;32mauthentication[m[33m)[m
+Author: Jessica Garrido <jessica.garrido.di@gmail.com>
+Date:   Sat Feb 1 20:06:03 2025 +0100
+
+    add fixtures
+
+[33mcommit 3195f3091ed144b0e807d573eab78f80ff2b2512[m[33m ([m[1;31morigin/fixtures[m[33m)[m
+Author: Jessica Garrido <jessica.garrido.di@gmail.com>
+Date:   Thu Jan 30 21:45:49 2025 +0100
+
+    continue fixtures
+
+[33mcommit 2b394cf8aa9405a7ce3b5c380be9eda31d564eb3[m
+Author: Jessica Garrido <jessica.garrido.di@gmail.com>
+Date:   Fri Jan 10 21:31:11 2025 +0100
+
+    add users fixtures
+
+[33mcommit b3e7a8aa00d3f3c91beb0a0e6aaf96ae50556209[m[33m ([m[1;31morigin/start-project[m[33m, [m[1;32mstart-project[m[33m)[m
+Author: Jessica Garrido <jessica.garrido.di@gmail.com>
+Date:   Fri Jan 10 20:20:30 2025 +0100
+
+    start the project, add bdd
+
+[33mcommit 3ce72b2691c4a267a92e8e0ef32e90ba1fab7cdb[m
+Author: Jessica Garrido <jessica.garrido.di@gmail.com>
+Date:   Thu Jan 9 20:01:51 2025 +0100
+
+    test
+
+[33mcommit 25d6190b9a5035d0dc92cbef41ef8593bba33e57[m
+Author: Jessica Garrido <jessica.garrido.di@gmail.com>
+Date:   Thu Jan 9 19:55:39 2025 +0100
+
+    base symfony
+
+[33mcommit b4047fdc03e776f4af772df305be90bbe9b9fd21[m
+Author: Jessica Garrido <jessica.garrido.di@gmail.com>
+Date:   Thu Jan 9 19:48:49 2025 +0100
+
+    first commit
