@@ -88,6 +88,12 @@ class ComposerStaticInit74ab73114a599f4a2997b6a284f9e273
         array (
             'Metadata\\' => 9,
         ),
+        'L' => 
+        array (
+            'Lexik\\Bundle\\JWTAuthenticationBundle\\' => 37,
+            'Lcobucci\\JWT\\' => 13,
+            'Lcobucci\\Clock\\' => 15,
+        ),
         'K' => 
         array (
             'Knp\\Component\\' => 14,
@@ -336,6 +342,18 @@ class ComposerStaticInit74ab73114a599f4a2997b6a284f9e273
         'Metadata\\' => 
         array (
             0 => __DIR__ . '/..' . '/jms/metadata/src',
+        ),
+        'Lexik\\Bundle\\JWTAuthenticationBundle\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/lexik/jwt-authentication-bundle',
+        ),
+        'Lcobucci\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/lcobucci/jwt/src',
+        ),
+        'Lcobucci\\Clock\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/lcobucci/clock/src',
         ),
         'Knp\\Component\\' => 
         array (
