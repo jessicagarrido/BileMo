@@ -3,7 +3,7 @@
         'name' => 'symfony/skeleton',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '969289cb7f546caf982d28f75fbbc3adfb8accb3',
+        'reference' => '8745a2362223665db22967c25bb1cf84ecd5af04',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -199,24 +199,6 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'lcobucci/clock' => array(
-            'pretty_version' => '2.3.0',
-            'version' => '2.3.0.0',
-            'reference' => 'c7aadcd6fd97ed9e199114269c0be3f335e38876',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../lcobucci/clock',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
-        'lcobucci/jwt' => array(
-            'pretty_version' => '4.0.4',
-            'version' => '4.0.4.0',
-            'reference' => '55564265fddf810504110bd68ca311932324b0e9',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../lcobucci/jwt',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
         'nikic/php-parser' => array(
             'pretty_version' => 'v5.4.0',
             'version' => '5.4.0.0',
@@ -315,15 +297,6 @@
             'provided' => array(
                 0 => '1.0|2.0|3.0',
             ),
-        ),
-        'stella-maris/clock' => array(
-            'pretty_version' => '0.1.7',
-            'version' => '0.1.7.0',
-            'reference' => 'fa23ce16019289a18bb3446fdecd45befcdd94f8',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../stella-maris/clock',
-            'aliases' => array(),
-            'dev_requirement' => false,
         ),
         'symfony/cache' => array(
             'pretty_version' => 'v7.2.3',
@@ -709,7 +682,7 @@
         'symfony/skeleton' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '969289cb7f546caf982d28f75fbbc3adfb8accb3',
+            'reference' => '8745a2362223665db22967c25bb1cf84ecd5af04',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

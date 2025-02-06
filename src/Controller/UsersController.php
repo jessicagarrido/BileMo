@@ -54,14 +54,14 @@ class UsersController extends AbstractController
     public function listUsers(UsersRepository $userRepository, Request $request, PaginatorInterface $paginator): Response
     {
         //recover the client id connected
-        $client = $this->getUser();
-        $idClient = $client->getId();
+        // $client = $this->getUser();
+        // $idClient = $client->getId();
 
         //recover the page
         $page = $request->query->getInt("page", 1);
 
             //recover the users of the client connected
-            $datas = $userRepository->findByClient($idClient);
+            $datas = $userRepository->findByClient('40');
             //recover a page with 5 users
             $users = $paginator->paginate($datas, $page, 5);
 
@@ -82,19 +82,19 @@ class UsersController extends AbstractController
     public function showUser($id, UsersRepository $usersRepository): Response
     {
         //recover the id of the client connected
-        $client = $this->getUser();
-        $idClient = $client->getId();
+        // $client = $this->getUser();
+        // $idClient = $client->getId();
 
             //recover one mobile
             //recover the datas user
-            $user = $usersRepository->find($id);
+            $user = $usersRepository->findOneById('16');
             //recover the client id of the user
-            $userClient = $user->getClient();
-            $idUserClient = $userClient->getId();
+            // $userClient = $user->getClient();
+            // $idUserClient = $userClient->getId();
             //verify if the client has access to this user
-            if($idClient !== $idUserClient) {
-                throw New HttpException(403, "You haven't access to this ressource.");
-            }
+            // if($idClient !== $idUserClient) {
+            //     throw New HttpException(403, "You haven't access to this ressource.");
+            // }
             
             $json = $this->serializer->serialize($user, 'json');
             $response = new Response($json, 200, []);

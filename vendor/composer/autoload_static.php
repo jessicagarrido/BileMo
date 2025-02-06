@@ -73,7 +73,6 @@ class ComposerStaticInit74ab73114a599f4a2997b6a284f9e273
             'Symfony\\Bundle\\MakerBundle\\' => 27,
             'Symfony\\Bundle\\FrameworkBundle\\' => 31,
             'Symfony\\Bridge\\Doctrine\\' => 24,
-            'StellaMaris\\Clock\\' => 18,
         ),
         'P' => 
         array (
@@ -88,11 +87,6 @@ class ComposerStaticInit74ab73114a599f4a2997b6a284f9e273
         'M' => 
         array (
             'Metadata\\' => 9,
-        ),
-        'L' => 
-        array (
-            'Lcobucci\\JWT\\' => 13,
-            'Lcobucci\\Clock\\' => 15,
         ),
         'K' => 
         array (
@@ -311,10 +305,6 @@ class ComposerStaticInit74ab73114a599f4a2997b6a284f9e273
         array (
             0 => __DIR__ . '/..' . '/symfony/doctrine-bridge',
         ),
-        'StellaMaris\\Clock\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/stella-maris/clock/src',
-        ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/src',
@@ -346,14 +336,6 @@ class ComposerStaticInit74ab73114a599f4a2997b6a284f9e273
         'Metadata\\' => 
         array (
             0 => __DIR__ . '/..' . '/jms/metadata/src',
-        ),
-        'Lcobucci\\JWT\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/lcobucci/jwt/src',
-        ),
-        'Lcobucci\\Clock\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/lcobucci/clock/src',
         ),
         'Knp\\Component\\' => 
         array (
