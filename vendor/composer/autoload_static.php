@@ -61,6 +61,7 @@ class ComposerStaticInit74ab73114a599f4a2997b6a284f9e273
             'Symfony\\Component\\HttpFoundation\\' => 33,
             'Symfony\\Component\\Finder\\' => 25,
             'Symfony\\Component\\Filesystem\\' => 29,
+            'Symfony\\Component\\ExpressionLanguage\\' => 37,
             'Symfony\\Component\\EventDispatcher\\' => 34,
             'Symfony\\Component\\ErrorHandler\\' => 31,
             'Symfony\\Component\\Dotenv\\' => 25,
@@ -103,6 +104,10 @@ class ComposerStaticInit74ab73114a599f4a2997b6a284f9e273
         array (
             'JMS\\Serializer\\' => 15,
             'JMS\\SerializerBundle\\' => 21,
+        ),
+        'H' => 
+        array (
+            'Hateoas\\' => 8,
         ),
         'D' => 
         array (
@@ -263,6 +268,10 @@ class ComposerStaticInit74ab73114a599f4a2997b6a284f9e273
         array (
             0 => __DIR__ . '/..' . '/symfony/filesystem',
         ),
+        'Symfony\\Component\\ExpressionLanguage\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/expression-language',
+        ),
         'Symfony\\Component\\EventDispatcher\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/event-dispatcher',
@@ -370,6 +379,10 @@ class ComposerStaticInit74ab73114a599f4a2997b6a284f9e273
         'JMS\\SerializerBundle\\' => 
         array (
             0 => __DIR__ . '/..' . '/jms/serializer-bundle',
+        ),
+        'Hateoas\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/willdurand/hateoas/src',
         ),
         'Doctrine\\SqlFormatter\\' => 
         array (

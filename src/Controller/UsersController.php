@@ -25,8 +25,8 @@ use Knp\Component\Pager\PaginatorInterface;
 
 class UsersController extends AbstractController
 {
-    
-    
+
+
     /**
      * @var SerializerInterface
      */
@@ -36,13 +36,14 @@ class UsersController extends AbstractController
      */
     private $deserializer;
 
-    public function  __construct(SerializerInterface $serializer, SymfonySerializer $deserializer, UserPasswordHasherInterface $userPasswordHasher) {
+    public function __construct(SerializerInterface $serializer, SymfonySerializer $deserializer, UserPasswordHasherInterface $userPasswordHasher)
+    {
         $this->serializer = $serializer;
         $this->deserializer = $deserializer;
         $this->passwordHasher = $userPasswordHasher;
     }
 
-    #[Route('/listUsers', name: 'api_listUsers', methods: ['GET'])]
+    #[Route('/api/listUsers', name: 'api_listUsers', methods: ['GET'])]
 
     /**
      * Return a list of users for the client
@@ -54,24 +55,25 @@ class UsersController extends AbstractController
     public function listUsers(UsersRepository $userRepository, Request $request, PaginatorInterface $paginator): Response
     {
         //recover the client id connected
-        // $client = $this->getUser();
-        // $idClient = $client->getId();
+        $client = $this->getUser();
+        $idClient = $client->getId();
+
 
         //recover the page
         $page = $request->query->getInt("page", 1);
 
-            //recover the users of the client connected
-            $datas = $userRepository->findByClient('40');
-            //recover a page with 5 users
-            $users = $paginator->paginate($datas, $page, 5);
+        //recover the users of the client connected
+        $datas = $userRepository->findByClient($idClient);
+        //recover a page with 5 users
+        $users = $paginator->paginate($datas, $page, 5);
 
-            $json = $this->serializer->serialize($users, 'json');
-            $response = new Response($json, 200, []);
+        $json = $this->serializer->serialize($users, 'json');
+        $response = new Response($json, 200, []);
 
-            return $response;
+        return $response;
     }
 
-    #[Route('/user/{id}', name: 'api_user', methods: ['GET'])]
+    #[Route('/api/user/{id}', name: 'api_user', methods: ['GET'])]
 
     /**
      * Return user client details
@@ -85,25 +87,25 @@ class UsersController extends AbstractController
         // $client = $this->getUser();
         // $idClient = $client->getId();
 
-            //recover one mobile
-            //recover the datas user
-            $user = $usersRepository->findOneById('16');
-            //recover the client id of the user
-            // $userClient = $user->getClient();
-            // $idUserClient = $userClient->getId();
-            //verify if the client has access to this user
-            // if($idClient !== $idUserClient) {
-            //     throw New HttpException(403, "You haven't access to this ressource.");
-            // }
-            
-            $json = $this->serializer->serialize($user, 'json');
-            $response = new Response($json, 200, []);
+        //recover one mobile
+        //recover the datas user
+        $user = $usersRepository->findOneById('16');
+        //recover the client id of the user
+        // $userClient = $user->getClient();
+        // $idUserClient = $userClient->getId();
+        //verify if the client has access to this user
+        // if($idClient !== $idUserClient) {
+        //     throw New HttpException(403, "You haven't access to this ressource.");
+        // }
 
-            return $response;
+        $json = $this->serializer->serialize($user, 'json');
+        $response = new Response($json, 200, []);
 
-        }
-        
-        #[Route('/addUser', name: 'api_addUser', methods: ['POST'])]
+        return $response;
+
+    }
+
+    #[Route('/api/addUser', name: 'api_addUser', methods: ['POST'])]
 
     /**
      * Create a new user
@@ -120,56 +122,56 @@ class UsersController extends AbstractController
         $user = $this->deserializer->deserialize($json, Users::class, 'json');
         $errors = $validator->validate($user);
 
-        if(count($errors) > 0) {
+        if (count($errors) > 0) {
             $data = $this->serializer->serialize($errors, 'json');
-            $response =  new JsonResponse($data, 400, [], true);
+            $response = new JsonResponse($data, 400, [], true);
             return $response;
         }
 
-        $password = $userPasswordHasher->hashPassword($user,$user->getPassword());
+        $password = $userPasswordHasher->hashPassword($user, $user->getPassword());
         $dateCreate = new \DateTime();
 
         $user->setPassword($password)
             ->setRoles(["ROLE_USER"])
             ->setDateCreate($dateCreate)
+            ->setFirstname($user->getFirstname())
+            ->setLastname($user->getLastname())
             ->setClient($this->getUser());
         $manager->persist($user);
         $manager->flush();
-        
+
         $json = $this->serializer->serialize($user, 'json');
         $response = new Response($json, 201, []);
         return $response;
     }
 
-    #[Route('/deleteUser/{id}', name: 'api_deleteUser', methods: ['DELETE'])]
-
-    /**
-     * Delete an user
-     * @param $id
-     * @param UsersRepository $usersRepository
-     * @param EntityManagerInterface $manager
-     * @return response
-     */
-    public function deleteUser($id, UsersRepository $usersRepository): Response
+    #[Route('/api/deleteUser/{id}', name: 'api_deleteUser', methods: ['DELETE'])]
+    public function deleteUser($id, UsersRepository $usersRepository, EntityManagerInterface $manager): Response
     {
-        //recover the id of the client connected
+        // Récupérer l'utilisateur connecté
         $client = $this->getUser();
         $idClient = $client->getId();
-        //recover the datas user
+
+        // Récupérer l'utilisateur à supprimer
         $user = $usersRepository->find($id);
-        //recover the client id of the user
+
+        if (!$user) {
+            throw new HttpException(404, "User not found.");
+        }
+
+        // Récupérer le client associé à cet utilisateur
         $userClient = $user->getClient();
         $idUserClient = $userClient->getId();
-        //verify if the client has access to this user
-        if($idClient !== $idUserClient) {
-            throw New HttpException(403, "You haven't access to this ressource.");
+
+        // Vérifier si le client a accès à cet utilisateur
+        if ($idClient !== $idUserClient) {
+            throw new HttpException(403, "You haven't access to this resource.");
         }
-        
-        $manager = $this->getDoctrine()->getManager();
+
+        // Suppression de l'utilisateur
         $manager->remove($user);
         $manager->flush();
 
-        return new Response("The user has been deleted");
-        
+        return new Response("The user has been deleted", Response::HTTP_OK);
     }
 }
