@@ -3,10 +3,23 @@
 namespace App\Entity;
 
 use App\Repository\ProductRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Hateoas\Configuration\Annotation as Hateoas;
+use JMS\Serializer\Annotation as Serializer;
 
+/**
+ * @Hateoas\Relation(
+ *      "self_mobile",
+ *      href = @Hateoas\Route(
+ *          "api_mobile",
+ *          parameters = { "id" = "expr(object.getId())" }
+ *      )
+ * )
+ * @Hateoas\Relation(
+ *      "all_mobiles",
+ *      href = @Hateoas\Route("api_listMobiles")
+ * )
+ */
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
 {
@@ -41,7 +54,6 @@ class Product
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -53,7 +65,6 @@ class Product
     public function setPrice(float $price): static
     {
         $this->price = $price;
-
         return $this;
     }
 
@@ -65,7 +76,6 @@ class Product
     public function setDescription(string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -77,8 +87,6 @@ class Product
     public function setBrands(?Brands $brands): static
     {
         $this->brands = $brands;
-
         return $this;
     }
-
 }
