@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use Nelmio\ApiDocBundle\Annotation\Model;
+use OpenApi\Annotations as OA;
 use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,21 +25,53 @@ class ProductsController extends AbstractController
         $this->serializer = $serializer;
     }
 
-    #[Route('/listMobiles', name: 'api_listMobiles', methods: ['GET'])]
-
     /**
-     * Return a list of phones ressource
-     * @param ProductRepository $productRepository
-     * @param Request $request
-     * @param PaginatorInterface $paginator
-     * @return response
+     * @OA\Get(
+     *     path="/listMobiles",
+     *     summary="Retourne la liste des mobiles",
+     *     tags={"Mobiles"},
+     * 
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Numéro de la page des produits à afficher",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=200,
+     *         description="Retourne la liste des mobiles",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref=@Model(type=Product::class))
+     *         )
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=401,
+     *         description="JWT Token non trouvé ou expiré",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="JWT Token non trouvé ou expiré")
+     *         )
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=404,
+     *         description="Page non trouvée",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Ressource non trouvée")
+     *         )
+     *     )
+     * )
      */
+
+    #[Route('/listMobiles', name: 'api_listMobiles', methods: ['GET'])]
 
     public function listMobiles(ProductRepository $productRepository, Request $request, PaginatorInterface $paginator): Response
     {
         //recover the page
         $page = $request->query->getInt("page", 1);
-
         //recover all mobiles
         $datas = $productRepository->findAll();
         //recover a page with 6 mobiles
@@ -48,6 +82,47 @@ class ProductsController extends AbstractController
 
         return $response;
     }
+
+        /**
+     * @OA\Get(
+     *     path="/mobile/{id}",
+     *     summary="Retourne le détail d'un mobile",
+     *     tags={"Mobiles"},
+     * 
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Id du mobile",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=200,
+     *         description="Retourne le détail d'un mobile",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref=@Model(type=Product::class))
+     *         )
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=401,
+     *         description="JWT Token non trouvé ou expiré",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="JWT Token non trouvé ou expiré")
+     *         )
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=404,
+     *         description="Page non trouvée",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Ressource non trouvée")
+     *         )
+     *     )
+     * )
+     */
 
     #[Route('/mobile/{id}', name: 'api_mobile', methods: ['GET'])]
 
