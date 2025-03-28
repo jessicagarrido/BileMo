@@ -43,21 +43,54 @@ class UsersController extends AbstractController
         $this->passwordHasher = $userPasswordHasher;
     }
 
-    #[Route('/api/listUsers', name: 'api_listUsers', methods: ['GET'])]
 
     /**
-     * Return a list of users for the client
-     * @param UsersRepository $userRepository
-     * @param Request $request
-     * @param PaginatorInterface $paginator
-     * @return response
+     * @OA\Get(
+     *     path="/api/listUsers",
+     *     summary="Retourne la liste des utilisateurs",
+     *     tags={"Users"},
+     * 
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Numéro de la page des utilisateurs à afficher",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=200,
+     *         description="Retourne la liste des utilisateurs",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref=@Model(type=Users::class))
+     *         )
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=401,
+     *         description="JWT Token non trouvé ou expiré",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="JWT Token non trouvé ou expiré")
+     *         )
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=404,
+     *         description="Page non trouvée",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Ressource non trouvée")
+     *         )
+     *     )
+     * )
      */
+    #[Route('/api/listUsers', name: 'api_listUsers', methods: ['GET'])]
+
     public function listUsers(UsersRepository $userRepository, Request $request, PaginatorInterface $paginator): Response
     {
         //recover the client id connected
         $client = $this->getUser();
         $idClient = $client->getId();
-
 
         //recover the page
         $page = $request->query->getInt("page", 1);
@@ -73,36 +106,71 @@ class UsersController extends AbstractController
         return $response;
     }
 
-    #[Route('/api/user/{id}', name: 'api_user', methods: ['GET'])]
 
     /**
-     * Return user client details
-     * @param $id
-     * @param UsersRepository $usersRepository
-     * @return response
+     * @OA\Get(
+     *     path="/api/user/{id}",
+     *     summary="Retourne le détail d'un utilisateur",
+     *     tags={"User"},
+     * 
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Id de l'user",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=200,
+     *         description="Retourne le détail d'un user",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref=@Model(type=Users::class))
+     *         )
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=401,
+     *         description="JWT Token non trouvé ou expiré",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="JWT Token non trouvé ou expiré")
+     *         )
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=404,
+     *         description="Page non trouvée",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Ressource non trouvée")
+     *         )
+     *     )
+     * )
      */
+    #[Route('/api/user/{id}', name: 'api_user', methods: ['GET'])]
+
     public function showUser($id, UsersRepository $usersRepository): Response
     {
         //recover the id of the client connected
-        // $client = $this->getUser();
-        // $idClient = $client->getId();
+        $clientConnected = $this->getUser();
+        $idClientConnected = $clientConnected->getId();
 
-        //recover one mobile
         //recover the datas user
-        $user = $usersRepository->findOneById('16');
+        $user = $usersRepository->findOneById($id);
+        
         //recover the client id of the user
-        // $userClient = $user->getClient();
-        // $idUserClient = $userClient->getId();
+        $userDatasClient = $user->getClient();
+        $userDataIdClient = $userDatasClient->getId();
+        
         //verify if the client has access to this user
-        // if($idClient !== $idUserClient) {
-        //     throw New HttpException(403, "You haven't access to this ressource.");
-        // }
+        if ($idClientConnected !== $userDataIdClient) {
+            throw new HttpException(403, "You haven't access to this ressource.");
+        }
 
         $json = $this->serializer->serialize($user, 'json');
         $response = new Response($json, 200, []);
 
         return $response;
-
     }
 
     #[Route('/api/addUser', name: 'api_addUser', methods: ['POST'])]

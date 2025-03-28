@@ -83,7 +83,7 @@ class ProductsController extends AbstractController
         return $response;
     }
 
-        /**
+    /**
      * @OA\Get(
      *     path="/mobile/{id}",
      *     summary="Retourne le détail d'un mobile",
