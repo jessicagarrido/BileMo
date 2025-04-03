@@ -2,24 +2,53 @@
 
 namespace App\Entity;
 
-use App\Repository\BrandsRepository;
+use OpenApi\Annotations as OA;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
-#[ORM\Entity(repositoryClass: BrandsRepository::class)]
+/**
+ * @ORM\Entity(repositoryClass=BrandsRepository::class)
+ * @Serializer\ExclusionPolicy("ALL")
+ * 
+ * @OA\Schema(
+ *     schema="Brands",
+ *     description="Représente une marque de produits"
+ * )
+ */
 class Brands
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    /**
+     * @OA\Property(
+     *     type="integer",
+     *     description="L'identifiant unique de la marque"
+     * )
+     */
     private ?int $id = null;
 
+    #[Serializer\Expose]
     #[ORM\Column(length: 200)]
+    /**
+     * @OA\Property(
+     *     type="string",
+     *     maxLength=200,
+     *     description="Le nom de la marque"
+     * )
+     */
     private ?string $name = null;
 
     /**
      * @var Collection<int, Product>
+     * 
+     * @OA\Property(
+     *     type="array",
+     *     @OA\Items(ref="#/components/schemas/Product"),
+     *     description="Liste des produits associés à cette marque"
+     * )
      */
     #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'brands', orphanRemoval: true)]
     private Collection $products;
@@ -68,7 +97,6 @@ class Brands
     public function removeProduct(Product $product): static
     {
         if ($this->products->removeElement($product)) {
-            // set the owning side to null (unless already changed)
             if ($product->getBrands() === $this) {
                 $product->setBrands(null);
             }
