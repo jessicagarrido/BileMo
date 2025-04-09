@@ -26,6 +26,7 @@ use JMS\Serializer\Annotation as Serializer;
  *     schema="Product",
  *     description="Représente un produit avec ses informations."
  * )
+ * @Serializer\ExclusionPolicy("ALL")
  */
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product

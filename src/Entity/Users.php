@@ -18,43 +18,7 @@ use JMS\Serializer\Annotation as Serializer;
     new ORM\UniqueConstraint(name: "UNIQ_IDENTIFIER_EMAIL", columns: ["email"]),
     new ORM\UniqueConstraint(name: "UNIQ_IDENTIFIER_USERNAME", columns: ["username"])
 ])]
-/**
- * @OA\Schema(
- *     schema="Users",
- *     description="Représente un utilisateur avec ses informations personnelles."
- * )
- * @Hateoas\Relation(
- *      "self",
- *      href=@Hateoas\Route(
- *          "api_user",
- *          parameters={"id"="expr(object.getId())"},
- *          absolute=true
- *      )
- * )
- * @Hateoas\Relation(
- *      "list",
- *      href=@Hateoas\Route(
- *          "api_listUsers",
- *          absolute=true
- *      )
- * )
- * @Hateoas\Relation(
- *      "addUser",
- *      href=@Hateoas\Route(
- *          "api_addUser",
- *          absolute=true
- *      )
- * )
- * @Hateoas\Relation(
- *      "delete",
- *      href=@Hateoas\Route(
- *          "api_deleteUser",
- *          parameters={"id"="expr(object.getId())"},
- *          absolute=true
- *      )
- * )
- * @Serializer\ExclusionPolicy("ALL")
- */
+
 class Users implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -134,8 +98,10 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToOne(inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: false)]
+    
     /**
      * @OA\Property(ref="#/components/schemas/Clients", description="Client auquel l'utilisateur est rattaché")
+     * @Serializer\Exclude
      */
     private ?Clients $client = null;
 
