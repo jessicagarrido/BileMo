@@ -10,8 +10,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use JMS\Serializer\SerializerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
 class ProductsController extends AbstractController
 {
@@ -68,19 +71,22 @@ class ProductsController extends AbstractController
 
     #[Route('/listMobiles', name: 'api_listMobiles', methods: ['GET'])]
 
-    public function listMobiles(ProductRepository $productRepository, Request $request, PaginatorInterface $paginator): Response
+    public function listMobiles(TagAwareCacheInterface $cache, ProductRepository $productRepository, Request $request, PaginatorInterface $paginator): JsonResponse
     {
         //recover the page
         $page = $request->query->getInt("page", 1);
-        //recover all mobiles
-        $datas = $productRepository->findAll();
-        //recover a page with 6 mobiles
-        $products = $paginator->paginate($datas, $page, 6);
 
-        $json = $this->serializer->serialize($products, 'json');
-        $response = new Response($json, 200, []);
+        $mobilesCache = $cache->get("products" . $page, function (ItemInterface $item) use ($page, $paginator, $productRepository) {
+            $item->expiresAfter(3600);
+            $item->tag('mobile');
 
-        return $response;
+            $datas = $productRepository->findAll();
+            return $paginator->paginate($datas, $page, 6);
+
+        });
+        $json = $this->serializer->serialize($mobilesCache, 'json');
+        return new JsonResponse($json, 200, [], true);
+
     }
 
     /**
@@ -132,14 +138,16 @@ class ProductsController extends AbstractController
      * @param ProductRepository $productRepository
      * @return response
      */
-    public function showMobile($id, ProductRepository $productRepository, ): Response
+    public function showMobile(CacheInterface $cache, $id, ProductRepository $productRepository, ): JsonResponse
     {
-        //recover one mobile
-        $product = $productRepository->findById($id);
-        $json = $this->serializer->serialize($product, 'json');
+        $mobileCache = $cache->get("product_details" . $id, function (ItemInterface $item) use ($id, $productRepository) {
+            $item->expiresAfter(3600);
 
-        $response = new Response($json, 200, []);
+            //recover one mobile
+            return $productRepository->findById($id);
+        });
+        $json = $this->serializer->serialize($mobileCache, 'json');
 
-        return $response;
+        return new JsonResponse($json, 200, [], true);
     }
 }
