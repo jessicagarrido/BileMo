@@ -86,7 +86,7 @@ class UsersController extends AbstractController
      */
     #[Route('/api/listUsers', name: 'api_listUsers', methods: ['GET'])]
 
-    public function listUsers(UsersRepository $userRepository, Request $request, PaginatorInterface $paginator): Response
+    public function listUsers(TagAwareCacheInterface $cache, UsersRepository $userRepository, Request $request, PaginatorInterface $paginator): JsonResponse
     {
         //recover the client id connected
         $client = $this->getUser();
@@ -95,15 +95,19 @@ class UsersController extends AbstractController
         //recover the page
         $page = $request->query->getInt("page", 1);
 
-        //recover the users of the client connected
-        $datas = $userRepository->findByClient($idClient);
-        //recover a page with 5 users
-        $users = $paginator->paginate($datas, $page, 5);
+        $usersCache = $cache->get("users" . $page, function (ItemInterface $item) use ($page, $idClient, $paginator, $userRepository) {
+            $item->expiresAfter(3600);
+            $item->tag('user');
 
-        $json = $this->serializer->serialize($users, 'json');
-        $response = new Response($json, 200, []);
+            //recover the users of the client connected
+            $datas = $userRepository->findByClient($idClient);
+            //recover a page with 5 users
+            return $paginator->paginate($datas, $page, 5);
 
-        return $response;
+
+        });
+        $json = $this->serializer->serialize($usersCache, 'json');
+        return new JsonResponse($json, 200, [], true);
     }
 
 
@@ -149,28 +153,30 @@ class UsersController extends AbstractController
      */
     #[Route('/api/user/{id}', name: 'api_user', methods: ['GET'])]
 
-    public function showUser($id, UsersRepository $usersRepository): Response
+    public function showUser(CacheInterface $cache, $id, UsersRepository $usersRepository): JsonResponse
     {
         //recover the id of the client connected
         $clientConnected = $this->getUser();
         $idClientConnected = $clientConnected->getId();
 
-        //recover the datas user
-        $user = $usersRepository->findOneById($id);
-        
-        //recover the client id of the user
-        $userDatasClient = $user->getClient();
-        $userDataIdClient = $userDatasClient->getId();
-        
-        //verify if the client has access to this user
-        if ($idClientConnected !== $userDataIdClient) {
-            throw new HttpException(403, "You haven't access to this ressource.");
-        }
+        $userCache = $cache->get("user_details" . $id, function (ItemInterface $item) use ($id, $idClientConnected, $usersRepository) {
+            $item->expiresAfter(3600);
+            //recover one mobile
+            //recover the datas user
+            $user = $usersRepository->find($id);
+            //recover the client id of the user
+            $userClient = $user->getClient();
+            $idUserClient = $userClient->getId();
+            //verify if the client has access to this user
+            if ($idClientConnected !== $idUserClient) {
+                throw new HttpException(403, "You haven't access to this ressource.");
+            }
+            return $user;
+        });
 
-        $json = $this->serializer->serialize($user, 'json');
-        $response = new Response($json, 200, []);
+        $json = $this->serializer->serialize($userCache, 'json');
+        return new JsonResponse($json, 200, [], true);
 
-        return $response;
     }
 
     #[Route('/api/addUser', name: 'api_addUser', methods: ['POST'])]
