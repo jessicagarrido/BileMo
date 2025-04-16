@@ -12,34 +12,30 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Hateoas\Configuration\Annotation as Hateoas;
 use JMS\Serializer\Annotation as Serializer;
 
-
 #[ORM\Entity(repositoryClass: UsersRepository::class)]
 #[ORM\Table(name: "users", uniqueConstraints: [
     new ORM\UniqueConstraint(name: "UNIQ_IDENTIFIER_EMAIL", columns: ["email"]),
     new ORM\UniqueConstraint(name: "UNIQ_IDENTIFIER_USERNAME", columns: ["username"])
 ])]
-
 class Users implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Serializer\Expose]
-
     /**
      * @OA\Property(type="integer", description="Identifiant unique de l'utilisateur")
      */
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    /**
-     * @OA\Property(type="string", format="email", maxLength=180, description="Adresse email unique de l'utilisateur")
-     */
     #[Assert\NotBlank(message: "Le champ email est requis.")]
     #[Assert\Email(message: "Veuillez entrer une adresse email valide.")]
     #[Assert\Length(max: 180, maxMessage: "L'email ne doit pas dépasser {{ limit }} caractères.")]
     #[Serializer\Expose]
-
+    /**
+     * @OA\Property(type="string", format="email", maxLength=180, description="Adresse email unique de l'utilisateur")
+     */
     private ?string $email = null;
 
     #[ORM\Column]
@@ -49,61 +45,58 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     #[ORM\Column]
-    /**
-     * @OA\Property(type="string", description="Mot de passe hashé de l'utilisateur")
-     */
     #[Assert\NotBlank(message: "Le champ mot de passe est requis.")]
     #[Assert\Length(min: 8, max: 50, minMessage: "Le mot de passe doit contenir au moins {{ limit }} caractères.", maxMessage: "Le mot de passe ne doit pas dépasser {{ limit }} caractères.")]
     #[Assert\Regex(pattern: "/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/", message: "Le mot de passe doit contenir au moins une majuscule, un chiffre et un caractère spécial.")]
-
+    #[Serializer\Exclude]
+    /**
+     * @OA\Property(type="string", description="Mot de passe hashé de l'utilisateur")
+     */
     private ?string $password = null;
 
     #[ORM\Column(length: 200, unique: true)]
-    /**
-     * @OA\Property(type="string", maxLength=200, description="Nom d'utilisateur unique")
-     */
     #[Assert\NotBlank(message: "Le champ username est requis.")]
     #[Assert\Length(max: 200, maxMessage: "Le nom d'utilisateur ne doit pas dépasser {{ limit }} caractères.")]
     #[Serializer\Expose]
-
+    /**
+     * @OA\Property(type="string", maxLength=200, description="Nom d'utilisateur unique")
+     */
     private ?string $username = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Serializer\Expose]
     /**
      * @OA\Property(type="string", format="date", description="Date de création de l'utilisateur")
      */
-    #[Serializer\Expose]
-
     private ?\DateTimeInterface $dateCreate = null;
 
     #[ORM\Column(length: 200)]
-    /**
-     * @OA\Property(type="string", maxLength=200, description="Prénom de l'utilisateur")
-     */
     #[Assert\NotBlank(message: "Le prénom est requis.")]
     #[Assert\Length(max: 200, maxMessage: "Le prénom ne doit pas dépasser {{ limit }} caractères.")]
     #[Serializer\Expose]
-
+    /**
+     * @OA\Property(type="string", maxLength=200, description="Prénom de l'utilisateur")
+     */
     private ?string $firstname = null;
 
     #[ORM\Column(length: 200)]
-    /**
-     * @OA\Property(type="string", maxLength=200, description="Nom de famille de l'utilisateur")
-     */
     #[Assert\NotBlank(message: "Le nom de famille est requis.")]
     #[Assert\Length(max: 200, maxMessage: "Le nom de famille ne doit pas dépasser {{ limit }} caractères.")]
     #[Serializer\Expose]
-
+    /**
+     * @OA\Property(type="string", maxLength=200, description="Nom de famille de l'utilisateur")
+     */
     private ?string $lastname = null;
 
     #[ORM\ManyToOne(inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: false)]
-    
+    #[Serializer\Exclude]
     /**
      * @OA\Property(ref="#/components/schemas/Clients", description="Client auquel l'utilisateur est rattaché")
-     * @Serializer\Exclude
      */
     private ?Clients $client = null;
+
+    // Getters / Setters...
 
     public function getId(): ?int
     {
@@ -152,7 +145,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function eraseCredentials(): void
     {
-        // Clear temporary sensitive data if necessary
+        // Clear sensitive data if necessary
     }
 
     public function getUsername(): ?string

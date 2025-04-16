@@ -7,16 +7,20 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
-
 /**
- * @ORM\Entity(repositoryClass=BrandsRepository::class)
+ * @OA\Schema(
+ *    schema="Brands",
+ *    description="Représente une marque de produits"
+ *)
  * @Serializer\ExclusionPolicy("ALL")
  * 
- * @OA\Schema(
- *     schema="Brands",
- *     description="Représente une marque de produits"
- * )
  */
+
+#[ORM\Entity(repositoryClass: BrandsRepository::class)]
+
+
+
+
 class Brands
 {
     #[ORM\Id]
