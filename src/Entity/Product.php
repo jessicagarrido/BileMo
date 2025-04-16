@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use OpenApi\Annotations as OA;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Hateoas\Configuration\Annotation as Hateoas;
@@ -19,6 +20,13 @@ use JMS\Serializer\Annotation as Serializer;
  *      "all_mobiles",
  *      href = @Hateoas\Route("api_listMobiles")
  * )
+ * @Serializer\ExclusionPolicy("ALL")
+ *
+ * @OA\Schema(
+ *     schema="Product",
+ *     description="Représente un produit avec ses informations."
+ * )
+ * @Serializer\ExclusionPolicy("ALL")
  */
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
@@ -26,19 +34,38 @@ class Product
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Serializer\Expose]
+    /**
+     * @OA\Property(type="integer", description="Identifiant unique du produit")
+     */
     private ?int $id = null;
 
     #[ORM\Column(length: 200)]
+    #[Serializer\Expose]
+    /**
+     * @OA\Property(type="string", maxLength=200, description="Nom du produit")
+     */
     private ?string $name = null;
 
     #[ORM\Column]
+    #[Serializer\Expose]
+    /**
+     * @OA\Property(type="number", format="float", description="Prix du produit")
+     */
     private ?float $price = null;
 
     #[ORM\Column(length: 5000)]
+    #[Serializer\Expose]
+    /**
+     * @OA\Property(type="string", maxLength=5000, description="Description détaillée du produit")
+     */
     private ?string $description = null;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
+    /**
+     * @OA\Property(ref="#/components/schemas/Brands", description="Marque associée au produit")
+     */
     private ?Brands $brands = null;
 
     public function getId(): ?int

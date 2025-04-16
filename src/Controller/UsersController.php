@@ -43,65 +43,139 @@ class UsersController extends AbstractController
         $this->passwordHasher = $userPasswordHasher;
     }
 
-    #[Route('/api/listUsers', name: 'api_listUsers', methods: ['GET'])]
 
     /**
-     * Return a list of users for the client
-     * @param UsersRepository $userRepository
-     * @param Request $request
-     * @param PaginatorInterface $paginator
-     * @return response
+     * @OA\Get(
+     *     path="/api/listUsers",
+     *     summary="Retourne la liste des utilisateurs",
+     *     tags={"Users"},
+     * 
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Numéro de la page des utilisateurs à afficher",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=200,
+     *         description="Retourne la liste des utilisateurs",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref=@Model(type=Users::class))
+     *         )
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=401,
+     *         description="JWT Token non trouvé ou expiré",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="JWT Token non trouvé ou expiré")
+     *         )
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=404,
+     *         description="Page non trouvée",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Ressource non trouvée")
+     *         )
+     *     )
+     * )
      */
-    public function listUsers(UsersRepository $userRepository, Request $request, PaginatorInterface $paginator): Response
+    #[Route('/api/listUsers', name: 'api_listUsers', methods: ['GET'])]
+
+    public function listUsers(TagAwareCacheInterface $cache, UsersRepository $userRepository, Request $request, PaginatorInterface $paginator): JsonResponse
     {
         //recover the client id connected
         $client = $this->getUser();
         $idClient = $client->getId();
 
-
         //recover the page
         $page = $request->query->getInt("page", 1);
 
-        //recover the users of the client connected
-        $datas = $userRepository->findByClient($idClient);
-        //recover a page with 5 users
-        $users = $paginator->paginate($datas, $page, 5);
+        $usersCache = $cache->get("users" . $page, function (ItemInterface $item) use ($page, $idClient, $paginator, $userRepository) {
+            $item->expiresAfter(3600);
+            $item->tag('user');
 
-        $json = $this->serializer->serialize($users, 'json');
-        $response = new Response($json, 200, []);
+            //recover the users of the client connected
+            $datas = $userRepository->findByClient($idClient);
+            //recover a page with 5 users
+            return $paginator->paginate($datas, $page, 5);
 
-        return $response;
+
+        });
+        $json = $this->serializer->serialize($usersCache, 'json');
+        return new JsonResponse($json, 200, [], true);
     }
 
-    #[Route('/api/user/{id}', name: 'api_user', methods: ['GET'])]
 
     /**
-     * Return user client details
-     * @param $id
-     * @param UsersRepository $usersRepository
-     * @return response
+     * @OA\Get(
+     *     path="/api/user/{id}",
+     *     summary="Retourne le détail d'un utilisateur",
+     *     tags={"User"},
+     * 
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Id de l'user",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=200,
+     *         description="Retourne le détail d'un user",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref=@Model(type=Users::class))
+     *         )
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=401,
+     *         description="JWT Token non trouvé ou expiré",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="JWT Token non trouvé ou expiré")
+     *         )
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=404,
+     *         description="Page non trouvée",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Ressource non trouvée")
+     *         )
+     *     )
+     * )
      */
-    public function showUser($id, UsersRepository $usersRepository): Response
+    #[Route('/api/user/{id}', name: 'api_user', methods: ['GET'])]
+
+    public function showUser(CacheInterface $cache, $id, UsersRepository $usersRepository): JsonResponse
     {
         //recover the id of the client connected
-        // $client = $this->getUser();
-        // $idClient = $client->getId();
+        $clientConnected = $this->getUser();
+        $idClientConnected = $clientConnected->getId();
 
-        //recover one mobile
-        //recover the datas user
-        $user = $usersRepository->findOneById('16');
-        //recover the client id of the user
-        // $userClient = $user->getClient();
-        // $idUserClient = $userClient->getId();
-        //verify if the client has access to this user
-        // if($idClient !== $idUserClient) {
-        //     throw New HttpException(403, "You haven't access to this ressource.");
-        // }
+        $userCache = $cache->get("user_details" . $id, function (ItemInterface $item) use ($id, $idClientConnected, $usersRepository) {
+            $item->expiresAfter(3600);
+            //recover one mobile
+            //recover the datas user
+            $user = $usersRepository->find($id);
+            //recover the client id of the user
+            $userClient = $user->getClient();
+            $idUserClient = $userClient->getId();
+            //verify if the client has access to this user
+            if ($idClientConnected !== $idUserClient) {
+                throw new HttpException(403, "You haven't access to this ressource.");
+            }
+            return $user;
+        });
 
-        $json = $this->serializer->serialize($user, 'json');
-        $response = new Response($json, 200, []);
-
-        return $response;
+        $json = $this->serializer->serialize($userCache, 'json');
+        return new JsonResponse($json, 200, [], true);
 
     }
 
