@@ -70,7 +70,7 @@ class ProductsController extends AbstractController
      * )
      */
 
-    #[Route('/listMobiles', name: 'api_listMobiles', methods: ['GET'])]
+    #[Route('/api/mobiles', name: 'api_listMobiles', methods: ['GET'])]
 
     public function listMobiles(TagAwareCacheInterface $cache, ProductRepository $productRepository, Request $request, PaginatorInterface $paginator): JsonResponse
     {
@@ -131,7 +131,7 @@ class ProductsController extends AbstractController
      * )
      */
 
-    #[Route('/mobile/{id}', name: 'api_mobile', methods: ['GET'])]
+    #[Route('/api/mobile/{id}', name: 'api_mobile', methods: ['GET'])]
 
     /**
      * Return phone details
