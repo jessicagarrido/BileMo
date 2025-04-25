@@ -2,16 +2,15 @@
 
 namespace App\DataFixtures;
 
-use Doctrine\Bundle\FixturesBundle\Fixture;
 use App\Entity\Clients;
-use Doctrine\Persistence\ObjectManager;
 use App\Entity\Users;
+use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
     private $passwordHasher;
-
 
     public function __construct(UserPasswordHasherInterface $passwordHasher)
     {
@@ -21,7 +20,6 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $clients = [
-
         ];
 
         $client = new Clients();
@@ -49,14 +47,14 @@ class AppFixtures extends Fixture
         $manager->persist($client);
         $clients[] = $client;
 
-        for ($i = 1; $i < 20; $i++) {
+        for ($i = 1; $i < 20; ++$i) {
             $user = new Users();
-            $user->setUsername('username_' . $i)
+            $user->setUsername('username_'.$i)
                 ->setPassword($this->passwordHasher->hashPassword($user, 'bilemo2025'))
                 ->setRoles(['ROLE_USER'])
-                ->setEmail('username_' . $i . '@gmail.fr')
-                ->setLastname('lastname_' . $i)
-                ->setFirstname('firstname_' . $i)
+                ->setEmail('username_'.$i.'@gmail.fr')
+                ->setLastname('lastname_'.$i)
+                ->setFirstname('firstname_'.$i)
                 ->setDateCreate(new \DateTime())
                 ->setClient($clients[rand(0, count($clients) - 1)]);
 

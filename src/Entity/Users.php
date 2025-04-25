@@ -2,20 +2,19 @@
 
 namespace App\Entity;
 
-use OpenApi\Annotations as OA;
 use App\Repository\UsersRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
+use OpenApi\Annotations as OA;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-use Hateoas\Configuration\Annotation as Hateoas;
-use JMS\Serializer\Annotation as Serializer;
 
 #[ORM\Entity(repositoryClass: UsersRepository::class)]
-#[ORM\Table(name: "users", uniqueConstraints: [
-    new ORM\UniqueConstraint(name: "UNIQ_IDENTIFIER_EMAIL", columns: ["email"]),
-    new ORM\UniqueConstraint(name: "UNIQ_IDENTIFIER_USERNAME", columns: ["username"])
+#[ORM\Table(name: 'users', uniqueConstraints: [
+    new ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', columns: ['email']),
+    new ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', columns: ['username']),
 ])]
 class Users implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -29,8 +28,8 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    #[Assert\NotBlank(message: "Le champ email est requis.")]
-    #[Assert\Email(message: "Veuillez entrer une adresse email valide.")]
+    #[Assert\NotBlank(message: 'Le champ email est requis.')]
+    #[Assert\Email(message: 'Veuillez entrer une adresse email valide.')]
     #[Assert\Length(max: 180, maxMessage: "L'email ne doit pas dépasser {{ limit }} caractères.")]
     #[Serializer\Expose]
     /**
@@ -45,9 +44,9 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     #[ORM\Column]
-    #[Assert\NotBlank(message: "Le champ mot de passe est requis.")]
-    #[Assert\Length(min: 8, max: 50, minMessage: "Le mot de passe doit contenir au moins {{ limit }} caractères.", maxMessage: "Le mot de passe ne doit pas dépasser {{ limit }} caractères.")]
-    #[Assert\Regex(pattern: "/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/", message: "Le mot de passe doit contenir au moins une majuscule, un chiffre et un caractère spécial.")]
+    #[Assert\NotBlank(message: 'Le champ mot de passe est requis.')]
+    #[Assert\Length(min: 8, max: 50, minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères.', maxMessage: 'Le mot de passe ne doit pas dépasser {{ limit }} caractères.')]
+    #[Assert\Regex(pattern: "/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/", message: 'Le mot de passe doit contenir au moins une majuscule, un chiffre et un caractère spécial.')]
     #[Serializer\Exclude]
     /**
      * @OA\Property(type="string", description="Mot de passe hashé de l'utilisateur")
@@ -55,7 +54,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 200, unique: true)]
-    #[Assert\NotBlank(message: "Le champ username est requis.")]
+    #[Assert\NotBlank(message: 'Le champ username est requis.')]
     #[Assert\Length(max: 200, maxMessage: "Le nom d'utilisateur ne doit pas dépasser {{ limit }} caractères.")]
     #[Serializer\Expose]
     /**
@@ -71,8 +70,8 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     private ?\DateTimeInterface $dateCreate = null;
 
     #[ORM\Column(length: 200)]
-    #[Assert\NotBlank(message: "Le prénom est requis.")]
-    #[Assert\Length(max: 200, maxMessage: "Le prénom ne doit pas dépasser {{ limit }} caractères.")]
+    #[Assert\NotBlank(message: 'Le prénom est requis.')]
+    #[Assert\Length(max: 200, maxMessage: 'Le prénom ne doit pas dépasser {{ limit }} caractères.')]
     #[Serializer\Expose]
     /**
      * @OA\Property(type="string", maxLength=200, description="Prénom de l'utilisateur")
@@ -80,8 +79,8 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $firstname = null;
 
     #[ORM\Column(length: 200)]
-    #[Assert\NotBlank(message: "Le nom de famille est requis.")]
-    #[Assert\Length(max: 200, maxMessage: "Le nom de famille ne doit pas dépasser {{ limit }} caractères.")]
+    #[Assert\NotBlank(message: 'Le nom de famille est requis.')]
+    #[Assert\Length(max: 200, maxMessage: 'Le nom de famille ne doit pas dépasser {{ limit }} caractères.')]
     #[Serializer\Expose]
     /**
      * @OA\Property(type="string", maxLength=200, description="Nom de famille de l'utilisateur")
@@ -111,6 +110,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
+
         return $this;
     }
 
@@ -123,12 +123,14 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roles = $this->roles;
         $roles[] = 'ROLE_USER';
+
         return array_unique($roles);
     }
 
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
+
         return $this;
     }
 
@@ -140,6 +142,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $password;
+
         return $this;
     }
 
@@ -156,6 +159,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUsername(string $username): static
     {
         $this->username = $username;
+
         return $this;
     }
 
@@ -167,6 +171,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDateCreate(\DateTimeInterface $dateCreate): static
     {
         $this->dateCreate = $dateCreate;
+
         return $this;
     }
 
@@ -178,6 +183,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFirstname(string $firstname): static
     {
         $this->firstname = $firstname;
+
         return $this;
     }
 
@@ -189,6 +195,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastname(string $lastname): static
     {
         $this->lastname = $lastname;
+
         return $this;
     }
 
@@ -200,6 +207,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function setClient(?Clients $client): static
     {
         $this->client = $client;
+
         return $this;
     }
 }

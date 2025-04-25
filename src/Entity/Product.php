@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use OpenApi\Annotations as OA;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Hateoas\Configuration\Annotation as Hateoas;
 use JMS\Serializer\Annotation as Serializer;
+use OpenApi\Annotations as OA;
 
 /**
  * @Hateoas\Relation(
@@ -20,12 +20,14 @@ use JMS\Serializer\Annotation as Serializer;
  *      "all_mobiles",
  *      href = @Hateoas\Route("api_listMobiles")
  * )
+ *
  * @Serializer\ExclusionPolicy("ALL")
  *
  * @OA\Schema(
  *     schema="Product",
  *     description="Représente un produit avec ses informations."
  * )
+ *
  * @Serializer\ExclusionPolicy("ALL")
  */
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
@@ -81,6 +83,7 @@ class Product
     public function setName(string $name): static
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -92,6 +95,7 @@ class Product
     public function setPrice(float $price): static
     {
         $this->price = $price;
+
         return $this;
     }
 
@@ -103,6 +107,7 @@ class Product
     public function setDescription(string $description): static
     {
         $this->description = $description;
+
         return $this;
     }
 
@@ -114,6 +119,7 @@ class Product
     public function setBrands(?Brands $brands): static
     {
         $this->brands = $brands;
+
         return $this;
     }
 }

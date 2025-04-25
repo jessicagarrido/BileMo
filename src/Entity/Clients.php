@@ -2,23 +2,22 @@
 
 namespace App\Entity;
 
-use OpenApi\Annotations as OA;
 use App\Repository\ClientsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
+use OpenApi\Annotations as OA;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-use JMS\Serializer\Annotation as Serializer;
 
 #[ORM\Entity(repositoryClass: ClientsRepository::class)]
-#[ORM\Table(name: "clients", uniqueConstraints: [
-    new ORM\UniqueConstraint(name: "UNIQ_IDENTIFIER_EMAIL", columns: ["email"]),
-    new ORM\UniqueConstraint(name: "UNIQ_IDENTIFIER_USERNAME", columns: ["username"])
+#[ORM\Table(name: 'clients', uniqueConstraints: [
+    new ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', columns: ['email']),
+    new ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', columns: ['username']),
 ])]
-
 /**
  * @OA\Schema(
  *     schema="Clients",
@@ -48,9 +47,8 @@ class Clients implements UserInterface, PasswordAuthenticatedUserInterface
      *     description="Adresse email unique du client"
      * )
      */
-
     #[Assert\Email(
-        message: "Veuillez entrer une adresse mail valide."
+        message: 'Veuillez entrer une adresse mail valide.'
     )]
     #[Assert\Length(
         max: 180,
@@ -65,6 +63,7 @@ class Clients implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @OA\Property(
      *     type="array",
+     *
      *     @OA\Items(type="string"),
      *     description="Liste des rôles attribués au client"
      * )
@@ -79,17 +78,17 @@ class Clients implements UserInterface, PasswordAuthenticatedUserInterface
      * )
      */
     #[Assert\NotBlank(
-        message: "Le champ est requis."
+        message: 'Le champ est requis.'
     )]
     #[Assert\Length(
         min: 8,
         max: 50,
-        minMessage: "Le mot de passe doit contenir au moins {{ limit }} caractères.",
-        maxMessage: "Le mot de passe ne doit pas dépasser {{ limit }} caractères."
+        minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères.',
+        maxMessage: 'Le mot de passe ne doit pas dépasser {{ limit }} caractères.'
     )]
     #[Assert\Regex(
         pattern: "/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/",
-        message: "Le mot de passe doit contenir au moins une majuscule, un caractère spécial et un chiffre."
+        message: 'Le mot de passe doit contenir au moins une majuscule, un caractère spécial et un chiffre.'
     )]
     private ?string $password = null;
     #[ORM\Column(length: 200)]
@@ -119,6 +118,7 @@ class Clients implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @OA\Property(
      *     type="array",
+     *
      *     @OA\Items(ref="#/components/schemas/Users"),
      *     description="Liste des utilisateurs associés à ce client"
      * )
@@ -143,6 +143,7 @@ class Clients implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
+
         return $this;
     }
 
@@ -158,6 +159,7 @@ class Clients implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roles = $this->roles;
         $roles[] = 'ROLE_USER';
+
         return array_unique($roles);
     }
 
@@ -167,6 +169,7 @@ class Clients implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
+
         return $this;
     }
 
@@ -178,6 +181,7 @@ class Clients implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $password;
+
         return $this;
     }
 
@@ -194,6 +198,7 @@ class Clients implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUsername(string $username): static
     {
         $this->username = $username;
+
         return $this;
     }
 
@@ -205,6 +210,7 @@ class Clients implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDateCreate(\DateTimeInterface $dateCreate): static
     {
         $this->dateCreate = $dateCreate;
+
         return $this;
     }
 
@@ -222,6 +228,7 @@ class Clients implements UserInterface, PasswordAuthenticatedUserInterface
             $this->users->add($user);
             $user->setClient($this);
         }
+
         return $this;
     }
 
@@ -232,6 +239,7 @@ class Clients implements UserInterface, PasswordAuthenticatedUserInterface
                 $user->setClient(null);
             }
         }
+
         return $this;
     }
 }

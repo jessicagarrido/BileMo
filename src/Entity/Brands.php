@@ -2,25 +2,21 @@
 
 namespace App\Entity;
 
-use OpenApi\Annotations as OA;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
+use OpenApi\Annotations as OA;
+
 /**
  * @OA\Schema(
  *    schema="Brands",
  *    description="Représente une marque de produits"
  *)
+ *
  * @Serializer\ExclusionPolicy("ALL")
- * 
  */
-
 #[ORM\Entity(repositoryClass: BrandsRepository::class)]
-
-
-
-
 class Brands
 {
     #[ORM\Id]
@@ -47,9 +43,10 @@ class Brands
 
     /**
      * @var Collection<int, Product>
-     * 
+     *
      * @OA\Property(
      *     type="array",
+     *
      *     @OA\Items(ref="#/components/schemas/Product"),
      *     description="Liste des produits associés à cette marque"
      * )
@@ -61,7 +58,6 @@ class Brands
     {
         $this->products = new ArrayCollection();
     }
-
 
     public function getId(): ?int
     {
@@ -108,5 +104,4 @@ class Brands
 
         return $this;
     }
-
 }
