@@ -84,7 +84,7 @@ class UsersController extends AbstractController
      *     )
      * )
      */
-    #[Route('/api/listUsers', name: 'api_listUsers', methods: ['GET'])]
+    #[Route('/api/users', name: 'api_listUsers', methods: ['GET'])]
 
     public function listUsers(TagAwareCacheInterface $cache, UsersRepository $userRepository, Request $request, PaginatorInterface $paginator): JsonResponse
     {
@@ -179,7 +179,7 @@ class UsersController extends AbstractController
 
     }
 
-    #[Route('/api/addUser', name: 'api_addUser', methods: ['POST'])]
+    #[Route('/api/user', name: 'api_addUser', methods: ['POST'])]
 
     /**
      * Create a new user
@@ -219,7 +219,7 @@ class UsersController extends AbstractController
         return $response;
     }
 
-    #[Route('/api/deleteUser/{id}', name: 'api_deleteUser', methods: ['DELETE'])]
+    #[Route('/api/user/{id}', name: 'api_deleteUser', methods: ['DELETE'])]
     public function deleteUser($id, UsersRepository $usersRepository, EntityManagerInterface $manager): Response
     {
         // Récupérer l'utilisateur connecté
@@ -246,6 +246,6 @@ class UsersController extends AbstractController
         $manager->remove($user);
         $manager->flush();
 
-        return new Response("The user has been deleted", Response::HTTP_OK);
+        return new Response(null, 204);
     }
 }
