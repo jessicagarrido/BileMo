@@ -89,21 +89,17 @@ class UsersController extends AbstractController
     #[Route('/api/users', name: 'api_listUsers', methods: ['GET'])]
     public function listUsers(TagAwareCacheInterface $cache, UsersRepository $userRepository, Request $request, PaginatorInterface $paginator): JsonResponse
     {
-        // recover the client id connected
         $client = $this->getUser();
         $idClient = $client->getId();
 
-        // recover the page
         $page = $request->query->getInt('page', 1);
 
         $usersCache = $cache->get('users'.$page, function (ItemInterface $item) use ($page, $idClient, $paginator, $userRepository) {
             $item->expiresAfter(3600);
             $item->tag('user');
 
-            // recover the users of the client connected
             $datas = $userRepository->findByClient($idClient);
 
-            // recover a page with 5 users
             return $paginator->paginate($datas, $page, 5);
         });
         $json = $this->serializer->serialize($usersCache, 'json');
@@ -161,19 +157,16 @@ class UsersController extends AbstractController
     #[Route('/api/user/{id}', name: 'api_user', methods: ['GET'])]
     public function showUser(CacheInterface $cache, $id, UsersRepository $usersRepository): JsonResponse
     {
-        // recover the id of the client connected
         $clientConnected = $this->getUser();
         $idClientConnected = $clientConnected->getId();
 
         $userCache = $cache->get('user_details'.$id, function (ItemInterface $item) use ($id, $idClientConnected, $usersRepository) {
             $item->expiresAfter(3600);
-            // recover one mobile
-            // recover the datas user
+
             $user = $usersRepository->find($id);
-            // recover the client id of the user
+
             $userClient = $user->getClient();
             $idUserClient = $userClient->getId();
-            // verify if the client has access to this user
             if ($idClientConnected !== $idUserClient) {
                 throw new HttpException(403, "You haven't access to this ressource.");
             }
@@ -193,7 +186,6 @@ class UsersController extends AbstractController
     public function addUser(Request $request, EntityManagerInterface $manager, ValidatorInterface $validator, UserPasswordHasherInterface $userPasswordHasher): Response
     {
         $json = $request->getContent();
-        // transform the datas in object
         $user = $this->deserializer->deserialize($json, Users::class, 'json');
         $errors = $validator->validate($user);
 
@@ -225,27 +217,22 @@ class UsersController extends AbstractController
     #[Route('/api/user/{id}', name: 'api_deleteUser', methods: ['DELETE'])]
     public function deleteUser($id, UsersRepository $usersRepository, EntityManagerInterface $manager): Response
     {
-        // Récupérer l'utilisateur connecté
         $client = $this->getUser();
         $idClient = $client->getId();
 
-        // Récupérer l'utilisateur à supprimer
         $user = $usersRepository->find($id);
 
         if (!$user) {
             throw new HttpException(404, 'User not found.');
         }
 
-        // Récupérer le client associé à cet utilisateur
         $userClient = $user->getClient();
         $idUserClient = $userClient->getId();
 
-        // Vérifier si le client a accès à cet utilisateur
         if ($idClient !== $idUserClient) {
             throw new HttpException(403, "You haven't access to this resource.");
         }
 
-        // Suppression de l'utilisateur
         $manager->remove($user);
         $manager->flush();
 

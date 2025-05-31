@@ -78,7 +78,6 @@ class ProductsController extends AbstractController
     #[Route('/api/mobiles', name: 'api_listMobiles', methods: ['GET'])]
     public function listMobiles(TagAwareCacheInterface $cache, ProductRepository $productRepository, Request $request, PaginatorInterface $paginator): JsonResponse
     {
-        // recover the page
         $page = $request->query->getInt('page', 1);
 
         $mobilesCache = $cache->get('products'.$page, function (ItemInterface $item) use ($page, $paginator, $productRepository) {
@@ -152,7 +151,6 @@ class ProductsController extends AbstractController
         $mobileCache = $cache->get('product_details'.$id, function (ItemInterface $item) use ($id, $productRepository) {
             $item->expiresAfter(3600);
 
-            // recover one mobile
             return $productRepository->findById($id);
         });
         $json = $this->serializer->serialize($mobileCache, 'json');
